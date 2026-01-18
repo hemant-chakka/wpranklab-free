@@ -157,7 +157,8 @@ class WPRankLab_Admin {
         check_admin_referer( 'wpranklab_add_test_snapshot' );
 
         $post_id = isset( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
-$days    = max( 0, min( 60, $days ) );
+        $days    = isset( $_GET['days'] ) ? (int) $_GET['days'] : 0;
+        $days    = max( 0, min( 60, $days ) );
 
         if ( ! $post_id || ! get_post( $post_id ) ) {
             wp_die( esc_html__( 'Invalid post.', 'wpranklab' ) );
@@ -1701,7 +1702,8 @@ public function field_webhook_url() {
                 <div class="notice notice-success" style="margin:8px 0 10px;">
                     <p>
                         <?php
-printf( esc_html__( 'Test snapshot added (%d day(s) back).', 'wpranklab' ), $days );
+                        $days = isset( $_GET['wpranklab_hist_days'] ) ? (int) $_GET['wpranklab_hist_days'] : 0;
+                        printf( esc_html__( 'Test snapshot added (%d day(s) back).', 'wpranklab' ), $days );
                         ?>
                     </p>
                 </div>

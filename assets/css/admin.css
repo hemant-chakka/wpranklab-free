@@ -139,6 +139,12 @@
     letter-spacing: 0.5px;
 }
 
+.wpranklab-brand__logo{
+  height: 44px;
+  width: auto;
+  display: block;
+}
+
 /* Promo Card */
 .wpranklab-promo-card {
     background: #fff;

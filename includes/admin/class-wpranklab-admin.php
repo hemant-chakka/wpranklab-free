@@ -677,7 +677,9 @@ class WPRankLab_Admin {
         echo '<div class="wpranklab-header">';
         echo '<div class="wpranklab-header__top">';
         echo '<div class="wpranklab-brand">';
-        echo '<span class="wpranklab-brand__mark" aria-hidden="true">◎</span>';
+        //echo '<span class="wpranklab-brand__mark" aria-hidden="true">◎</span>';
+        $logo = WPRANKLAB_PLUGIN_URL . 'assets/images/wpranklab-logo.svg';
+        echo '<img class="wpranklab-brand__logo" src="' . esc_url( $logo ) . '" alt="' . esc_attr__( 'WPRankLab', 'wpranklab' ) . '" />';
         echo '<div class="wpranklab-brand__text">';
         echo '<div class="wpranklab-brand__name">' . esc_html__( 'WPRankLab', 'wpranklab' ) . '</div>';
         echo '<div class="wpranklab-brand__title">' . esc_html( $title ) . '</div>';

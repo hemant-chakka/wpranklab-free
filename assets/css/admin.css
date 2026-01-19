@@ -125,10 +125,10 @@
     text-decoration: none;
 }
 
-.wpranklab-brand-logo-icon {
-    width: 48px;
-    height: 48px;
-    display: inline-block;
+.wpranklab-brand-logo-icon{
+  height: 48px;
+  width: auto;
+  display: block;
 }
 
 .wpranklab-brand-text {

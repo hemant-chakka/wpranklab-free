@@ -706,10 +706,11 @@ class WPRankLab_Admin {
         $scan_count = isset( $_GET['wpranklab_scan_count'] ) ? (int) $_GET['wpranklab_scan_count'] : 0;
         ?>
         <div class="wrap wpranklab-wrap">
-            <div class="wpranklab-admin-header">
-                <div class="wpranklab-admin-title">
-                    <h1><?php esc_html_e( 'WPRankLab', 'wpranklab' ); ?></h1>
-                    <p class="wpranklab-muted"><?php esc_html_e( 'AI Visibility Overview', 'wpranklab' ); ?></p>
+            <!-- Brand Header -->
+            <div class="wpranklab-brand-header">
+                <div class="wpranklab-brand-logo">
+                    <span class="wpranklab-brand-logo-icon">🔬</span>
+                    <span class="wpranklab-brand-text">WPRANKLAB</span>
                 </div>
             </div>
             
@@ -756,7 +757,23 @@ if ( class_exists( 'WPRankLab_Batch_Scan' ) ) {
                 </div>
             <?php endif; ?>
 
-            <div class="wpranklab-card">
+            <!-- Promo Card (Free users only) -->
+            <?php if ( ! wpranklab_is_pro_active() ) : ?>
+            <div class="wpranklab-promo-card">
+                <div class="wpranklab-promo-content">
+                    <h2><?php esc_html_e( 'Want to Unlock All Features?', 'wpranklab' ); ?></h2>
+                    <p><?php esc_html_e( 'Get extended features such as advanced keywords suggestions, trends and full AI implementation.', 'wpranklab' ); ?></p>
+                </div>
+                <div class="wpranklab-promo-action">
+                    <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpranklab-upgrade' ) ); ?>" class="wpranklab-btn-pro">
+                        <?php esc_html_e( 'Buy PRO License', 'wpranklab' ); ?>
+                    </a>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Dashboard Intro -->
+            <div class="wpranklab-dashboard-intro">
                 <p><?php esc_html_e( 'This dashboard will evolve to show your AI Visibility Score, trends, and top recommendations. For now you can trigger a full-site scan to populate scores for all posts and pages.', 'wpranklab' ); ?></p>
 
                 <?php if ( wpranklab_is_pro_active() ) : ?>

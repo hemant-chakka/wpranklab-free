@@ -97,8 +97,6 @@
 .wpranklab-admin-nav a:hover{background:#f6f7f7;}
 .wpranklab-admin-nav a.is-active{border-color:#2271b1;box-shadow:0 0 0 1px #2271b1 inset;}
 
-.wpranklab-card{background:#fff;border:1px solid #dcdcde;border-radius:14px;padding:14px 16px;margin:16px 0;}
-.wpranklab-card h2{margin-top:0;}
 .wpranklab-grid-2{display:grid;grid-template-columns:1fr;gap:16px;}
 @media (min-width:960px){.wpranklab-grid-2{grid-template-columns:1fr 1fr;}}
 
@@ -106,18 +104,16 @@
 
 /* Brand Header */
 .wpranklab-brand-header {
-    background: #fff;
-    padding: 20px 0;
-    margin: 0 0 24px -20px;
-    margin-right: -20px;
-    padding-left: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    background: transparent;
+    padding: 16px 0 12px;
+    margin: 0 0 20px 0;
+    border-bottom: 0;
 }
 
 .wpranklab-brand-logo {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0;
     font-family: 'Lilita One', cursive;
     font-size: 28px;
     line-height: 1;
@@ -126,58 +122,64 @@
 }
 
 .wpranklab-brand-logo-icon{
-  height: 48px;
+  height: 64px;
   width: auto;
   display: block;
 }
 
 .wpranklab-brand-text {
-    background: linear-gradient(90deg, var(--wpranklab-yellow) 0%, var(--wpranklab-orange) 100%);
+    background: linear-gradient(90deg, var(--wpranklab-orange) 0%, var(--wpranklab-yellow) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     letter-spacing: 0.5px;
+    font-weight: 700;
 }
 
-.wpranklab-brand__logo{
-  height: 44px;
-  width: auto;
-  display: block;
+/* WordPress Notices - ensure they appear above promo card with clear gap */
+.wpranklab-wrap .notice {
+    margin-bottom: 16px;
 }
 
 /* Promo Card */
 .wpranklab-promo-card {
     background: #fff;
     border: 1px solid #dcdcde;
-    border-radius: 14px;
-    padding: 24px;
+    border-radius: 12px;
+    padding: 20px 24px;
     margin: 20px 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
     align-items: center;
 }
 
-@media (min-width: 782px) {
+@media (min-width: 960px) {
     .wpranklab-promo-card {
-        grid-template-columns: 2fr 1fr;
-        gap: 32px;
+        grid-template-columns: 1.6fr 0.4fr;
+        gap: 30px;
+        align-items: center;
+    }
+    
+    .wpranklab-promo-action {
+        justify-content: flex-end;
     }
 }
 
 .wpranklab-promo-content h2 {
-    margin: 0 0 12px 0;
+    margin: 0 0 10px 0;
     font-size: 20px;
-    font-weight: 600;
-    color: var(--wpranklab-black);
+    font-weight: 700;
+    color: #1d2327;
     font-family: 'Inter', sans-serif;
 }
 
 .wpranklab-promo-content p {
     margin: 0;
-    color: #646970;
-    line-height: 1.6;
+    color: #50575e;
+    line-height: 1.55;
+    max-width: 68ch;
 }
 
 .wpranklab-promo-action {
@@ -187,14 +189,19 @@
 }
 
 .wpranklab-btn-pro {
-    display: inline-block;
-    padding: 12px 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 280px;
+    height: 44px;
+    padding: 0 24px;
     background: var(--wpranklab-green);
     color: #fff;
-    border-radius: 8px;
+    border-radius: 10px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 14px;
     transition: background 0.2s ease;
     border: none;
     cursor: pointer;
@@ -217,96 +224,16 @@
     color: var(--wpranklab-black);
 }
 
-/* =========================
-   Dashboard design overrides
-   Paste at END of admin.css
-   ========================= */
-
-/* Brand header (closer to the frame) */
-.wpranklab-brand-header{
-  background: transparent;
-  border-bottom: 0;
-  padding: 12px 0 10px;
-  margin: 0 0 14px 0;
-}
-
-.wpranklab-brand-logo{
-  display:flex;
-  align-items:center;
-  gap: 0;
-}
-
-/* Combined logo image */
-.wpranklab-brand-logo-icon{
-  height: 56px;
-  width: auto;
-  display:block;
-}
-
-/* Promo Card — match design frame */
-.wpranklab-promo-card{
-  background:#fff;
-  border:1px solid #dcdcde;
-  border-radius:12px;
-  padding:22px 26px;
-  margin:18px 0 22px;
-  box-shadow:0 2px 12px rgba(0,0,0,.12);
-  display:grid;
-  grid-template-columns: 1fr; /* mobile */
-  gap:18px;
-  align-items:center;
-}
-
-@media (min-width: 960px){
-  .wpranklab-promo-card{
-    grid-template-columns: 1.4fr 0.6fr; /* left wider */
-    gap: 30px;
-  }
-}
-
-.wpranklab-promo-content h2{
-  margin:0 0 10px;
-  font-size:20px;
-  font-weight:700;
-  color:#1d2327;
-}
-
-.wpranklab-promo-content p{
-  margin:0;
-  color:#50575e;
-  line-height:1.55;
-  max-width: 68ch;
-}
-
-.wpranklab-promo-action{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.wpranklab-btn-pro{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width: 360px;      /* long centered button */
-  max-width: 100%;
-  height: 44px;
-  padding: 0 24px;
-  background: var(--wpranklab-green);
-  color:#fff;
-  border-radius:10px;
-  text-decoration:none;
-  font-weight:600;
-  font-size:14px;
-}
-.wpranklab-btn-pro:hover,
-.wpranklab-btn-pro:focus{
-  background:#17989a;
-  color:#fff;
-}
-
-/* Card style closer to frame */
+/* Card style */
 .wpranklab-card{
+  background: #fff;
+  border: 1px solid #dcdcde;
   border-radius: 12px;
+  padding: 14px 16px;
+  margin: 16px 0;
   box-shadow: 0 1px 0 rgba(0,0,0,.02);
+}
+
+.wpranklab-card h2{
+  margin-top: 0;
 }

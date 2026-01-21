@@ -216,3 +216,97 @@
 .wpranklab-dashboard-intro strong {
     color: var(--wpranklab-black);
 }
+
+/* =========================
+   Dashboard design overrides
+   Paste at END of admin.css
+   ========================= */
+
+/* Brand header (closer to the frame) */
+.wpranklab-brand-header{
+  background: transparent;
+  border-bottom: 0;
+  padding: 12px 0 10px;
+  margin: 0 0 14px 0;
+}
+
+.wpranklab-brand-logo{
+  display:flex;
+  align-items:center;
+  gap: 0;
+}
+
+/* Combined logo image */
+.wpranklab-brand-logo-icon{
+  height: 56px;
+  width: auto;
+  display:block;
+}
+
+/* Promo Card — match design frame */
+.wpranklab-promo-card{
+  background:#fff;
+  border:1px solid #dcdcde;
+  border-radius:12px;
+  padding:22px 26px;
+  margin:18px 0 22px;
+  box-shadow:0 2px 12px rgba(0,0,0,.12);
+  display:grid;
+  grid-template-columns: 1fr; /* mobile */
+  gap:18px;
+  align-items:center;
+}
+
+@media (min-width: 960px){
+  .wpranklab-promo-card{
+    grid-template-columns: 1.4fr 0.6fr; /* left wider */
+    gap: 30px;
+  }
+}
+
+.wpranklab-promo-content h2{
+  margin:0 0 10px;
+  font-size:20px;
+  font-weight:700;
+  color:#1d2327;
+}
+
+.wpranklab-promo-content p{
+  margin:0;
+  color:#50575e;
+  line-height:1.55;
+  max-width: 68ch;
+}
+
+.wpranklab-promo-action{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.wpranklab-btn-pro{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width: 360px;      /* long centered button */
+  max-width: 100%;
+  height: 44px;
+  padding: 0 24px;
+  background: var(--wpranklab-green);
+  color:#fff;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:600;
+  font-size:14px;
+}
+.wpranklab-btn-pro:hover,
+.wpranklab-btn-pro:focus{
+  background:#17989a;
+  color:#fff;
+}
+
+/* Card style closer to frame */
+.wpranklab-card{
+  border-radius: 12px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.02);
+}

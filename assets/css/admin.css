@@ -155,7 +155,19 @@
   align-items:center;
   gap:14px;
   margin: 6px 0 18px;
+  flex-wrap:wrap;
+  align-items:flex-start;
 }
+
+/* Ensure admin notices and batch cancel form stack below header title even when inside flex header */
+.wprl-brand > .notice,
+.wprl-brand > form,
+.wprl-brand > .wprl-alert-area{
+  flex-basis:100%;
+  width:100%;
+  margin-left:0 !important;
+}
+
 
 /* Mascot size + alignment */
 .wprl-mascot svg{

@@ -49,7 +49,10 @@ class WPRankLab_Admin {
         // Global scan for all content.
         add_action( 'admin_post_wpranklab_scan_all', array( $this, 'handle_scan_all' ) );
 
-		        // AI generation: summary + Q&A.
+		        
+        // Setup Wizard save handler.
+        add_action( 'admin_post_wpranklab_setup_wizard_save', array( $this, 'handle_setup_wizard_save' ) );
+// AI generation: summary + Q&A.
         add_action( 'admin_post_wpranklab_generate_summary', array( $this, 'handle_generate_summary' ) );
         add_action( 'admin_post_wpranklab_generate_qa', array( $this, 'handle_generate_qa' ) );
         add_action( 'admin_post_wpranklab_insert_summary', array( $this, 'handle_insert_summary' ) );
@@ -252,7 +255,17 @@ $days    = max( 0, min( 60, $days ) );
         );
 
         
+        
+
         add_submenu_page(
+            'wpranklab',
+            __( 'Setup Wizard', 'wpranklab' ),
+            __( 'Setup Wizard', 'wpranklab' ),
+            $cap,
+            'wpranklab-setup',
+            array( $this, 'render_setup_wizard_page' )
+        );
+add_submenu_page(
             'wpranklab',
             __( 'Upgrade to Pro', 'wpranklab' ),
             __( 'Upgrade to Pro', 'wpranklab' ),
@@ -2910,6 +2923,188 @@ if ( ! $is_pro ) {
     
     
     
+
+
+    /**
+     * Render the Free Setup Wizard page (Figma-aligned).
+     */
+    public function render_setup_wizard_page() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        $settings = get_option( WPRANKLAB_OPTION_SETTINGS, array() );
+
+        // Default to step 2 (Site Mapping) as per design.
+        $step = isset( $_GET['wprl_step'] ) ? max( 1, absint( $_GET['wprl_step'] ) ) : 2;
+        $step = min( 4, $step );
+
+        $org_type      = isset( $settings['setup_org_type'] ) ? (string) $settings['setup_org_type'] : 'ecommerce';
+        $business_name = isset( $settings['setup_business_name'] ) ? (string) $settings['setup_business_name'] : '';
+        $website_name  = isset( $settings['setup_website_name'] ) ? (string) $settings['setup_website_name'] : '';
+
+        $action_url = admin_url( 'admin-post.php' );
+
+        $top_steps = array(
+            1 => __( 'Optimize SEO', 'wpranklab' ),
+            2 => __( 'Site Mapping', 'wpranklab' ),
+            3 => __( 'Social Visibility', 'wpranklab' ),
+            4 => __( 'Advanced Settings', 'wpranklab' ),
+        );
+
+        echo '<div class="wrap wpranklab-wrap">';
+        echo '  <div class="wprl-brand">';
+        echo '    <span class="wprl-mascot" aria-hidden="true">' . $this->get_inline_mascot_svg() . '</span>';
+        echo '    <h1 class="wprl-logo-text">WPRANKLAB</h1>';
+        echo '  </div>';
+
+        // Top stepper.
+        echo '  <div class="wprl-wizard-top">';
+        echo '    <div class="wprl-wizard-stepper">';
+        $pos = 1;
+        foreach ( $top_steps as $n => $label ) {
+            $state = ( $n < $step ) ? 'is-done' : ( ( $n === $step ) ? 'is-active' : '' );
+
+            echo '      <div class="wprl-stepper-item ' . esc_attr( $state ) . '">';
+            echo '        <div class="wprl-stepper-dot">';
+            if ( $n < $step ) {
+                echo '          <span class="dashicons dashicons-yes"></span>';
+            } else {
+                echo '          <span class="wprl-stepper-ring"></span>';
+            }
+            echo '        </div>';
+            echo '        <div class="wprl-stepper-label">' . esc_html( $label ) . '</div>';
+            echo '      </div>';
+
+            if ( $pos < 4 ) {
+                $line_state = ( $n < $step ) ? 'is-done' : '';
+                echo '      <div class="wprl-stepper-line ' . esc_attr( $line_state ) . '"></div>';
+            }
+            $pos++;
+        }
+        echo '    </div>';
+        echo '  </div>';
+
+        // Main panel.
+        echo '  <div class="wprl-wizard-panel">';
+        echo '    <div class="wprl-wizard-grid">';
+
+        // Left: fields.
+        echo '      <div class="wprl-wizard-left">';
+        echo '        <div class="wprl-wizard-title-row">';
+        echo '          <div class="wprl-wizard-badge">4</div>';
+        echo '          <h2 class="wprl-wizard-title">' . esc_html( $top_steps[ $step ] ) . '</h2>';
+        echo '        </div>';
+
+        echo '        <form class="wprl-wizard-form" method="post" action="' . esc_url( $action_url ) . '">';
+        echo '          <input type="hidden" name="action" value="wpranklab_setup_wizard_save" />';
+        echo '          <input type="hidden" name="wprl_step" value="' . esc_attr( (string) $step ) . '" />';
+        wp_nonce_field( 'wpranklab_setup_wizard_save', 'wpranklab_setup_wizard_nonce' );
+
+        echo '          <div class="wprl-field">';
+        echo '            <label for="wprl_org_type">' . esc_html__( 'Organization Type', 'wpranklab' ) . '</label>';
+        echo '            <select id="wprl_org_type" name="setup_org_type">';
+        $org_options = array(
+            'ecommerce' => 'eCommerce',
+            'agency' => 'Agency',
+            'local_business' => 'Local Business',
+            'saas' => 'SaaS',
+            'publisher' => 'Publisher',
+            'other' => 'Other',
+        );
+        foreach ( $org_options as $val => $label ) {
+            $selected = selected( $org_type, $val, false );
+            echo '              <option value="' . esc_attr( $val ) . '"' . $selected . '>' . esc_html( $label ) . '</option>';
+        }
+        echo '            </select>';
+        echo '          </div>';
+
+        echo '          <div class="wprl-field">';
+        echo '            <label for="wprl_business_name">' . esc_html__( 'Business Name', 'wpranklab' ) . '</label>';
+        echo '            <input id="wprl_business_name" type="text" name="setup_business_name" value="' . esc_attr( $business_name ) . '" />';
+        echo '          </div>';
+
+        echo '          <div class="wprl-field">';
+        echo '            <label for="wprl_website_name">' . esc_html__( 'Website Name', 'wpranklab' ) . '</label>';
+        echo '            <input id="wprl_website_name" type="text" name="setup_website_name" value="' . esc_attr( $website_name ) . '" />';
+        echo '          </div>';
+
+        echo '          <button type="submit" class="button wprl-wizard-next">' . esc_html__( 'NEXT STEP', 'wpranklab' ) . '</button>';
+        echo '        </form>';
+        echo '      </div>';
+
+        // Middle: mini list + dots.
+        echo '      <div class="wprl-wizard-middle">';
+        echo '        <div class="wprl-mini-steps">';
+        echo '          <div class="wprl-mini-row"><span>' . esc_html__( 'Organization Details', 'wpranklab' ) . '</span><span class="wprl-q">?</span></div>';
+        echo '          <div class="wprl-mini-row"><span>' . esc_html__( 'Slugs', 'wpranklab' ) . '</span><span class="wprl-q">?</span></div>';
+        echo '          <div class="wprl-mini-row"><span>' . esc_html__( 'Indexing', 'wpranklab' ) . '</span><span class="wprl-q">?</span></div>';
+        echo '        </div>';
+        echo '        <div class="wprl-mini-dots">';
+        echo '          <span class="wprl-mini-dot is-active"></span>';
+        echo '          <span class="wprl-mini-dot"></span>';
+        echo '          <span class="wprl-mini-dot"></span>';
+        echo '        </div>';
+        echo '      </div>';
+
+        // Right: upsell card.
+        echo '      <div class="wprl-wizard-right">';
+        echo '        <div class="wprl-upsell-card">';
+        echo '          <h3>' . esc_html__( 'Want to Unlock All Features?', 'wpranklab' ) . '</h3>';
+        echo '          <p>' . esc_html__( 'Get extended features such as advanced keywords suggestions, trends and full AI implementation.', 'wpranklab' ) . '</p>';
+        echo '          <div class="wprl-upsell-lock">' . $this->get_inline_lock_svg() . '</div>';
+        echo '          <a class="button wprl-buy-pro" href="' . esc_url( admin_url( 'admin.php?page=wpranklab-upgrade' ) ) . '">' . esc_html__( 'Buy PRO License', 'wpranklab' ) . '</a>';
+        echo '        </div>';
+        echo '      </div>';
+
+        echo '    </div>';
+        echo '  </div>';
+        echo '</div>';
+    }
+
+    /**
+     * Handle saving Setup Wizard fields.
+     */
+    public function handle_setup_wizard_save() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Unauthorized', 'wpranklab' ) );
+        }
+
+        if ( empty( $_POST['wpranklab_setup_wizard_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wpranklab_setup_wizard_nonce'] ) ), 'wpranklab_setup_wizard_save' ) ) {
+            wp_die( esc_html__( 'Invalid request.', 'wpranklab' ) );
+        }
+
+        $settings = get_option( WPRANKLAB_OPTION_SETTINGS, array() );
+
+        $settings['setup_org_type']      = isset( $_POST['setup_org_type'] ) ? sanitize_text_field( wp_unslash( $_POST['setup_org_type'] ) ) : '';
+        $settings['setup_business_name'] = isset( $_POST['setup_business_name'] ) ? sanitize_text_field( wp_unslash( $_POST['setup_business_name'] ) ) : '';
+        $settings['setup_website_name']  = isset( $_POST['setup_website_name'] ) ? sanitize_text_field( wp_unslash( $_POST['setup_website_name'] ) ) : '';
+
+        $step = isset( $_POST['wprl_step'] ) ? max( 1, absint( $_POST['wprl_step'] ) ) : 2;
+        $step = min( 4, $step );
+        $next = min( 4, $step + 1 );
+
+        $settings['setup_wizard_step'] = $next;
+        update_option( WPRANKLAB_OPTION_SETTINGS, $settings, false );
+
+        wp_safe_redirect( admin_url( 'admin.php?page=wpranklab-setup&wprl_step=' . $next ) );
+        exit;
+    }
+
+    /**
+     * Small inline mascot SVG, re-used in multiple pages.
+     */
+    private function get_inline_mascot_svg() {
+        return '<svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img"><circle cx="32" cy="32" r="30" fill="#E5F8FF"/><path d="M20 26c0-6 5-11 12-11s12 5 12 11v14c0 6-5 11-12 11s-12-5-12-11V26z" fill="#19AEAD"/><path d="M25 28c0-3 3-6 7-6h0c4 0 7 3 7 6v1H25v-1z" fill="#177CD4"/><circle cx="28.5" cy="35" r="3" fill="#000"/><circle cx="35.5" cy="35" r="3" fill="#000"/><path d="M27 43c2 2 8 2 10 0" stroke="#000" stroke-width="2" stroke-linecap="round"/><path d="M32 8v6" stroke="#FB6A08" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="7" r="3" fill="#FEB201"/></svg>';
+    }
+
+    /**
+     * Inline lock SVG for upsell card (matches design).
+     */
+    private function get_inline_lock_svg() {
+        return '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true"><rect x="18" y="28" width="28" height="26" rx="4" stroke="#111" stroke-width="3"/><path d="M24 28v-6c0-6 4-10 8-10s8 4 8 10v6" stroke="#111" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="41" r="3" fill="#111"/></svg>';
+    }
+
 
 }
 

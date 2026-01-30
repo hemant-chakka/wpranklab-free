@@ -1,3 +1,4 @@
+.wprl-brand{display:flex;align-items:center;gap:14px;margin:8px 0 18px;flex-wrap:wrap;}
 /* WPRankLab Figma UI base */
 :root{
   --wprl-yellow:#FEB201;
@@ -18,7 +19,7 @@
   max-width: 1200px;
 }
 
-.wprl-brand123{
+.wprl-brand{
   display:flex;
   align-items:center;
   gap:14px;
@@ -442,3 +443,6 @@
   .wprl-upsell-card{ margin-left:0; max-width: 100%; }
   .wprl-stepper-item{ min-width: 120px; }
 }
+
+
+.wprl-logo-img{display:block;max-height:56px;width:auto;max-width:340px;}

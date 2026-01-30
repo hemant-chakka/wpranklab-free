@@ -682,21 +682,7 @@ add_submenu_page(
         <div class="wrap wpranklab-wrap">
             
             <div class="wprl-brand">
-    <span class="wprl-mascot" aria-hidden="true">
-        <!-- Simple inline SVG mascot (safe / no external file needed) -->
-        <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
-            <circle cx="32" cy="32" r="30" fill="#E5F8FF"/>
-            <path d="M20 26c0-6 5-11 12-11s12 5 12 11v14c0 6-5 11-12 11s-12-5-12-11V26z" fill="#19AEAD"/>
-            <path d="M25 28c0-3 3-6 7-6h0c4 0 7 3 7 6v1H25v-1z" fill="#177CD4"/>
-            <circle cx="28.5" cy="35" r="3" fill="#000"/>
-            <circle cx="35.5" cy="35" r="3" fill="#000"/>
-            <path d="M27 43c2 2 8 2 10 0" stroke="#000" stroke-width="2" stroke-linecap="round"/>
-            <path d="M32 8v6" stroke="#FB6A08" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="32" cy="7" r="3" fill="#FEB201"/>
-        </svg>
-    </span>
-
-    <h1 class="wprl-logo-text">WPRANKLAB</h1>
+    <img class="wprl-logo-img" src="<?php echo esc_url( WPRANKLAB_PLUGIN_URL . 'assets/img/wpranklab-brand-logo.webp' ); ?>" alt="<?php esc_attr_e( 'WPRANKLAB', 'wpranklab' ); ?>" />
 </div>
 
             
@@ -2954,8 +2940,7 @@ if ( ! $is_pro ) {
 
         echo '<div class="wrap wpranklab-wrap">';
         echo '  <div class="wprl-brand">';
-        echo '    <span class="wprl-mascot" aria-hidden="true">' . $this->get_inline_mascot_svg() . '</span>';
-        echo '    <h1 class="wprl-logo-text">WPRANKLAB</h1>';
+        echo '    <img class="wprl-logo-img" src="' . esc_url( WPRANKLAB_PLUGIN_URL . 'assets/img/wpranklab-brand-logo.webp' ) . '" alt="WPRANKLAB" />';
         echo '  </div>';
 
         // Top stepper.

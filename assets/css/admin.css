@@ -160,13 +160,15 @@
   align-items:flex-start;
 }
 
-/* Ensure admin notices and batch cancel form stack below header title even when inside flex header */
-.wprl-brand > .notice,
-.wprl-brand > form,
-.wprl-brand > .wprl-alert-area{
-  flex-basis:100%;
-  width:100%;
-  margin-left:0 !important;
+/* Alert area under the logo */
+.wprl-alert-area{
+  margin: 8px 0 18px;
+}
+.wprl-alert-area .notice{
+  margin: 0 0 10px;
+}
+.wprl-alert-area .wprl-batch-actions{
+  margin-top: 8px;
 }
 
 
@@ -446,3 +448,41 @@
 
 
 .wprl-logo-img{display:block;max-height:56px;width:auto;max-width:340px;}
+
+
+/* Custom alert styling (avoid WP admin .notice behaviors) */
+.wprl-alert-area{
+  margin: 14px 0 18px;
+}
+.wprl-alert{
+  background: #fff;
+  border-left: 4px solid var(--wprl-blue);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 0 0 10px;
+}
+.wprl-alert p{ margin: 0; }
+.wprl-alert--success{ border-left-color: var(--wprl-green); background: rgba(25,174,173,.08); }
+.wprl-alert--info{ border-left-color: var(--wprl-blue); background: rgba(23,124,212,.08); }
+.wprl-alert--warning{ border-left-color: var(--wprl-orange); background: rgba(251,106,8,.08); }
+
+.wprl-alert-actions{ margin: 6px 0 0; }
+
+.wprl-btn{
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.wprl-btn--secondary{
+  background: #fff;
+  border: 1px solid #c3c4c7;
+  color: #1d2327;
+}
+.wprl-btn--secondary:hover{
+  background: #f6f7f7;
+  color: #1d2327;
+}

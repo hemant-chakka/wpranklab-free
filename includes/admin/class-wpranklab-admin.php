@@ -685,6 +685,71 @@ add_submenu_page(
     <img class="wprl-logo-img" src="<?php echo esc_url( WPRANKLAB_PLUGIN_URL . 'assets/img/wpranklab-brand-logo.webp' ); ?>" alt="<?php esc_attr_e( 'WPRANKLAB', 'wpranklab' ); ?>" />
 </div>
 
+
+<?php
+// Build batch scan alerts HTML (custom classes to avoid WP admin notice behaviors).
+$wprl_alerts_html = '';
+$wprl_strip_batch_param = false;
+
+if ( class_exists( 'WPRankLab_Batch_Scan' ) ) {
+	$scan  = WPRankLab_Batch_Scan::get_instance();
+	$state = is_object( $scan ) ? $scan->get_state() : array();
+
+	$status   = isset( $state['status'] ) ? (string) $state['status'] : 'idle';
+	$total    = isset( $state['total'] ) ? intval( $state['total'] ) : 0;
+	$progress = isset( $state['progress'] ) ? intval( $state['progress'] ) : 0;
+
+	$items_html = '';
+
+	// One-time "complete" notice (do not persist on refresh).
+	if ( 'complete' === $status && get_transient( 'wpranklab_batch_complete_notice' ) ) {
+		delete_transient( 'wpranklab_batch_complete_notice' );
+		$items_html .= '<div class="wprl-alert wprl-alert--success"><p>' . esc_html__( 'Batch scan complete.', 'wpranklab' ) . '</p></div>';
+	}
+
+	// One-time param-based notices.
+	if ( isset( $_GET['wpranklab_batch'] ) ) {
+		$flag = sanitize_text_field( wp_unslash( $_GET['wpranklab_batch'] ) );
+
+		if ( 'started' === $flag ) {
+			$items_html .= '<div class="wprl-alert wprl-alert--success"><p>' . esc_html__( 'Batch scan started.', 'wpranklab' ) . '</p></div>';
+			$wprl_strip_batch_param = true;
+		} elseif ( 'cancelled' === $flag ) {
+			$items_html .= '<div class="wprl-alert wprl-alert--warning"><p>' . esc_html__( 'Batch scan cancelled.', 'wpranklab' ) . '</p></div>';
+			$wprl_strip_batch_param = true;
+		}
+	}
+
+	// Running status (shows while the scan is actually running).
+	if ( 'running' === $status && $total > 0 ) {
+		$items_html .= '<div class="wprl-alert wprl-alert--info"><p>' . sprintf(
+			esc_html__( 'Batch scan running: %1$d / %2$d scanned', 'wpranklab' ),
+			intval( $progress ),
+			intval( $total )
+		) . '</p></div>';
+
+		$cancel_url = wp_nonce_url(
+			admin_url( 'admin-post.php?action=wpranklab_cancel_batch_scan' ),
+			'wpranklab_cancel_batch_scan'
+		);
+
+		$items_html .= '<p class="wprl-alert-actions"><a class="wprl-btn wprl-btn--secondary" href="' . esc_url( $cancel_url ) . '">' . esc_html__( 'Cancel Batch Scan', 'wpranklab' ) . '</a></p>';
+	}
+
+	if ( '' !== $items_html ) {
+		$wprl_alerts_html = '<div class="wprl-alert-area">' . $items_html . '</div>';
+
+		// Strip one-time query param so refresh does not re-show started/cancelled.
+		if ( $wprl_strip_batch_param ) {
+			$wprl_alerts_html .= '<script>(function(){try{var u=new URL(window.location.href);u.searchParams.delete("wpranklab_batch");window.history.replaceState({},"",u.toString());}catch(e){}})();</script>';
+		}
+	}
+}
+
+?>
+
+
+
             
             
             
@@ -701,50 +766,8 @@ add_submenu_page(
                     </div>
                 </div>
             </div>
-<?php
-if ( class_exists( 'WPRankLab_Batch_Scan' ) ) {
-    $state = WPRankLab_Batch_Scan::get_instance()->get_state();
 
-    if ( isset( $_GET['wpranklab_batch'] ) && 'started' === $_GET['wpranklab_batch'] ) {
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Batch scan started.', 'wpranklab' ) . '</p></div>';
-    } elseif ( isset( $_GET['wpranklab_batch'] ) && 'cancelled' === $_GET['wpranklab_batch'] ) {
-        echo '<div class="notice notice-warning is-dismissible"><p>' . esc_html__( 'Batch scan cancelled.', 'wpranklab' ) . '</p></div>';
-    }
-
-    if ( 'running' === $state['status'] && $state['total'] > 0 ) {
-        echo '<div class="notice notice-info"><p>' .
-            esc_html( sprintf( 'Batch scan running: %d / %d scanned', (int) $state['progress'], (int) $state['total'] ) ) .
-            '</p></div>';
-
-        // Cancel button
-        ?>
-        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin: 10px 0 20px;">
-            <?php wp_nonce_field( 'wpranklab_cancel_batch_scan' ); ?>
-            <input type="hidden" name="action" value="wpranklab_cancel_batch_scan" />
-            <?php submit_button( __( 'Cancel Batch Scan', 'wpranklab' ), 'secondary', 'wpranklab_cancel_batch_btn', false ); ?>
-        </form>
-        <?php
-    } elseif ( 'complete' === $state['status'] ) {
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Batch scan complete.', 'wpranklab' ) . '</p></div>';
-    }
-}
-?>
-            
-
-            <?php if ( $scan_done ) : ?>
-                <div class="notice notice-success is-dismissible">
-                    <p>
-                        <?php
-                        printf(
-                            esc_html__( 'AI Visibility scan completed for %d items.', 'wpranklab' ),
-                            $scan_count
-                        );
-                        ?>
-                    </p>
-                </div>
-            <?php endif; ?>
-
-            <p><?php esc_html_e( 'This dashboard will evolve to show your AI Visibility Score, trends, and top recommendations. For now you can trigger a full-site scan to populate scores for all posts and pages.', 'wpranklab' ); ?></p>
+<p><?php esc_html_e( 'This dashboard will evolve to show your AI Visibility Score, trends, and top recommendations. For now you can trigger a full-site scan to populate scores for all posts and pages.', 'wpranklab' ); ?></p>
 
             <?php if ( wpranklab_is_pro_active() ) : ?>
                 <p><strong><?php esc_html_e( 'Pro license is active. Pro features will be enabled as they are implemented.', 'wpranklab' ); ?></strong></p>
@@ -753,6 +776,8 @@ if ( class_exists( 'WPRankLab_Batch_Scan' ) ) {
             <?php endif; ?>
 
             <hr />
+
+            <?php if ( ! empty( $wprl_alerts_html ) ) { echo $wprl_alerts_html; } ?>
 
             <h2><?php esc_html_e( 'Scan All Content', 'wpranklab' ); ?></h2>
             <p><?php esc_html_e( 'Run an AI Visibility scan for all supported post types (posts and pages by default). This may take a moment on large sites.', 'wpranklab' ); ?></p>

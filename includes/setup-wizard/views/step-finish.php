@@ -1,12 +1,5 @@
-<h1>Finish Setup</h1>
-<p>You're all set. You can now run your first AI Visibility scan.</p>
-<table class="form-table">
-  <tr>
-    <th><label for="wprl_run_first_scan">Run First Scan Now</label></th>
-    <td>
-      <label><input type="checkbox" name="wprl_run_first_scan" id="wprl_run_first_scan" value="1" checked>
-      Start the first scan immediately after finishing setup.</label>
-    </td>
-  </tr>
-</table>
-<p class="description">You can also start a scan later from the WPRankLab Dashboard.</p>
+<div class="wprl-finish">
+  <img src="<?php echo esc_url( WPRL_URL . 'assets/img/setup-success-croc.png' ); ?>" alt="Success">
+  <p>Congrats! WPRankLab essential settings are configured now.<br>You can click on the button to go to your main dashboard.</p>
+  <a class="wprl-go" href="<?php echo esc_url( admin_url('admin.php?page=wpranklab') ); ?>">GO TO MY DASHBOARD</a>
+</div>

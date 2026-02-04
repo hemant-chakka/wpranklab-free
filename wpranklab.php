@@ -10,6 +10,10 @@
  * Domain Path:       /languages
  */
 
+if ( ! defined('WPRL_PATH') ) { define('WPRL_PATH', plugin_dir_path(__FILE__)); }
+if ( ! defined('WPRL_URL') ) { define('WPRL_URL', plugin_dir_url(__FILE__)); }
+
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
@@ -128,3 +132,29 @@ function wpranklab_require_pro() {
 }
 
 
+
+// Setup Wizard bootstrap
+if ( is_admin() ) {
+  require_once WPRL_PATH . 'includes/setup-wizard/class-wprl-setup-wizard.php';
+  (new WPRL_Setup_Wizard())->init();
+}
+
+
+function wprl_on_activate() {
+    update_option('wprl_setup_complete', 0);
+    set_transient('wprl_do_setup_redirect', true, 30);
+}
+register_activation_hook( __FILE__, 'wprl_on_activate' );
+
+
+function wprl_on_uninstall() {
+    delete_option('wprl_setup_complete');
+    delete_option('wprl_site_type');
+    delete_option('wprl_language');
+    delete_option('wprl_enable_ai');
+    delete_option('wprl_scan_posts');
+    delete_option('wprl_scan_pages');
+    delete_option('wprl_report_email');
+    delete_option('wprl_weekly_reports_enabled');
+}
+register_uninstall_hook( __FILE__, 'wprl_on_uninstall' );

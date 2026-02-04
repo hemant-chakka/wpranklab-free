@@ -1,0 +1,1 @@
+<h1>Welcome to WPRankLab</h1><p>This wizard helps configure AI visibility tracking.</p>

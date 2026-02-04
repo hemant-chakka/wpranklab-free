@@ -225,7 +225,8 @@ class WPRankLab_History {
 
         $is_pro  = function_exists( 'wpranklab_is_pro_active' ) && wpranklab_is_pro_active();
         $site    = get_bloginfo( 'name' );
-        $to      = get_option( 'admin_email' );
+        $to      = get_option( 'wprl_report_email' );
+        if ( empty( $to ) ) { $to = get_option( 'admin_email' ); }
         $subject = sprintf(
             /* translators: %s: site name. */
             __( 'Your Weekly AI Visibility Update — %s', 'wpranklab' ),

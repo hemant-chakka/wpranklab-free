@@ -676,6 +676,21 @@ add_submenu_page(
      * Dashboard page.
      */
     public function render_dashboard_page() {
+        $wprl_setup_complete = (string) get_option('wprl_setup_complete', '0') === '1';
+
+        if ( isset($_GET['setup_required']) && (int) $_GET['setup_required'] === 1 ) {
+            echo '<div class="notice notice-error" style="padding:12px 14px; margin: 12px 0;">';
+            echo '<p><strong>Setup required:</strong> Please complete the Setup Wizard before running a scan.</p>';
+            echo '</div>';
+        }
+
+        if ( ! $wprl_setup_complete ) {
+            echo '<div class="notice notice-warning" style="padding:12px 14px; margin: 12px 0;">';
+            echo '<p><strong>Complete Setup:</strong> Please finish the Setup Wizard to configure scans and weekly reports. ';
+            echo '<a href="' . esc_url( admin_url('admin.php?page=wprl-setup-wizard') ) . '">Open Setup Wizard</a></p>';
+            echo '</div>';
+        }
+
         $scan_done  = isset( $_GET['wpranklab_scan_all'] ) && 'done' === $_GET['wpranklab_scan_all'];
         $scan_count = isset( $_GET['wpranklab_scan_count'] ) ? (int) $_GET['wpranklab_scan_count'] : 0;
         ?>
@@ -782,10 +797,21 @@ if ( class_exists( 'WPRankLab_Batch_Scan' ) ) {
             <h2><?php esc_html_e( 'Scan All Content', 'wpranklab' ); ?></h2>
             <p><?php esc_html_e( 'Run an AI Visibility scan for all supported post types (posts and pages by default). This may take a moment on large sites.', 'wpranklab' ); ?></p>
 
+            <?php if ( ! $wprl_setup_complete ) : ?>
+              <div class="notice notice-info" style="padding:10px 12px; margin: 10px 0 0;">
+                <p><?php esc_html_e( 'Complete the Setup Wizard to enable scanning. Once completed, this button will become active.', 'wpranklab' ); ?>
+                  <a href="<?php echo esc_url( admin_url('admin.php?page=wprl-setup-wizard') ); ?>"><?php esc_html_e( 'Open Setup Wizard', 'wpranklab' ); ?></a>
+                </p>
+              </div>
+            <?php endif; ?>
+
             <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
                 <?php wp_nonce_field( 'wpranklab_scan_all' ); ?>
                 <input type="hidden" name="action" value="wpranklab_scan_all" />
-                <?php submit_button( __( 'Scan All Content Now', 'wpranklab' ), 'primary', 'wpranklab_scan_all_btn', false ); ?>
+                <?php
+                  $attrs = $wprl_setup_complete ? '' : 'disabled="disabled"';
+                  submit_button( __( 'Scan All Content Now', 'wpranklab' ), 'primary', 'wpranklab_scan_all_btn', false, $attrs );
+                ?>
             </form>
 
             <hr />

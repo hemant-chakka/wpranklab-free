@@ -244,27 +244,6 @@ $days    = max( 0, min( 60, $days ) );
             'dashicons-chart-line',
             59
         );
-
-        add_submenu_page(
-            'wpranklab',
-            __( 'Settings', 'wpranklab' ),
-            __( 'Settings', 'wpranklab' ),
-            $cap,
-            'wpranklab-settings',
-            array( $this, 'render_settings_page' )
-        );
-
-        
-        
-
-        add_submenu_page(
-            'wpranklab',
-            __( 'Setup Wizard', 'wpranklab' ),
-            __( 'Setup Wizard', 'wpranklab' ),
-            $cap,
-            'wpranklab-setup',
-            array( $this, 'render_setup_wizard_page' )
-        );
 add_submenu_page(
             'wpranklab',
             __( 'Upgrade to Pro', 'wpranklab' ),

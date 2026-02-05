@@ -14,14 +14,14 @@ class WPRL_Setup_Wizard {
 
   public function register_page() {
     add_submenu_page(
-      null,
-      'WPRankLab Setup',
-      'WPRankLab Setup',
+      'wpranklab',
+      __( 'Setup Wizard', 'wpranklab' ),
+      __( 'Setup Wizard', 'wpranklab' ),
       'manage_options',
       'wprl-setup-wizard',
-      [$this, 'render']
+      [ $this, 'render' ]
     );
-  }
+}
 
   public function maybe_redirect_to_wizard() {
     if ( (int) get_option('wprl_setup_complete', 0) === 1 ) {
